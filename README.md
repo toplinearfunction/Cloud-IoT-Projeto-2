@@ -12,7 +12,7 @@ O status de brilho do LED é enviado para a nuvem.
 Estas duas informações são plotadas num gráfico. 
 Quando o sensor de luminosidade detectar que está "escuro", o brilho do LED aumenta. Quando o sensor de luminosidade detectar que está "claro", o brilho do LED diminui. 
 
-**Comentários**
+**Implementação**
 
 Para realizar este projeto não precisamos utilizar nenhuma biblioteca adicional ou complementar além das usadas em sala. Usamos as seguintes bibliotecas <ESP8266WiFi.h>, <ArduinoJson.h>, <PubSubClient.h> e <Adafruit_NeoPixel.h>. 
 
@@ -26,4 +26,4 @@ O algoritmo consiste em fazermos uma leitura pelo sensor; em seguida, dividimos 
 
 No NodeRed criamos uma chave de código para a página do projeto. Esta chave recebe a informação da nuvem e usamos em dois switchs para lermos a informação dada pelo leitor de luminosidade e a informação mandada para ser usada no LED. Separadas as informações, passamos estas por uma função de normalização para que os gráficos sejam mais aprazíveis para o entendimento daquele que está analisando. De forma que maior luminosidade é indicada de uma escala percentual e o led também o é, porém de forma complementar.
 
-**Endereço para nuvem:** https://renan-iot.mybluemix.net/ui/#!/0 
+**Endereço para visualização:** https://renan-iot.mybluemix.net/ui/#!/0 
