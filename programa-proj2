@@ -1,0 +1,137 @@
+#include <ESP8266WiFi.h> // Bibliotecas
+#include <ArduinoJson.h>
+#include <PubSubClient.h>
+
+#include <Adafruit_NeoPixel.h>
+#ifdef _AVR_
+#include <avr/power.h>
+#endif
+
+#define PINLed D4
+#define PINSensor A0
+#define STASSID "monstrao-otakinha" // Nome da rede
+#define STAPSK  "enkcqyP8"    // senha
+
+// ---------------------------------------------------------------
+//        UPDATE CONFIGURATION TO MATCH YOUR ENVIRONMENT
+// ---------------------------------------------------------------
+
+// Watson IoT connection details
+#define MQTT_HOST "55l7dy.messaging.internetofthings.ibmcloud.com"
+#define MQTT_PORT 1883
+#define MQTT_DEVICEID "d:55l7dy:ESP8266:dev01"
+#define MQTT_USER "use-token-auth"
+#define MQTT_TOKEN "Fisica123"
+#define MQTT_TOPIC "iot-2/evt/status/fmt/json"
+#define MQTT_TOPIC_DISPLAY "iot-2/cmd/display/fmt/json"
+
+// MQTT objects
+void callback(char* topic, byte* payload, unsigned int length);
+WiFiClient wifiClient;
+PubSubClient mqtt(MQTT_HOST, MQTT_PORT, callback, wifiClient);
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  // handle message arrived
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] : ");
+  
+  payload[length] = 0; // ensure valid content is zero terminated so can treat as c-string
+  Serial.println((char *)payload);
+}
+
+const char* ssid     = STASSID;
+const char* password = STAPSK;
+
+int readingIn = 0; // Leitura do Sensor
+int output = 0;
+
+// variables to hold data
+StaticJsonDocument<100> jsonDoc;
+JsonObject payload = jsonDoc.to<JsonObject>();
+JsonObject status = payload.createNestedObject("d");
+static char msg[50];
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PINLed, NEO_GRB + NEO_KHZ800);
+
+void setup() {
+  Serial.begin(115200); //INICIALIZA A SERIAL
+  strip.begin(); // inicializa o led
+  strip.setBrightness(50); // define o brilho
+  strip.show(); // Initialize all pixels to 'off'
+  
+  
+  // We start by connecting to a WiFi network
+
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  /* Explicitly set the ESP8266 to be a WiFi-client, otherwise, it by default,
+     would try to act as both a client and an access-point and could cause
+     network-issues with your other WiFi-devices on your WiFi-network. */
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  // Connect to MQTT - IBM Watson IoT Platform
+  if (mqtt.connect(MQTT_DEVICEID, MQTT_USER, MQTT_TOKEN)) {
+    Serial.println("MQTT Connected");
+    mqtt.subscribe(MQTT_TOPIC_DISPLAY);
+
+  } else {
+    Serial.println("MQTT Failed to connect!");
+    ESP.reset();
+  }
+}
+
+
+void loop() {
+  mqtt.loop();
+  while (!mqtt.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (mqtt.connect(MQTT_DEVICEID, MQTT_USER, MQTT_TOKEN)) {
+      Serial.println("MQTT Connected");
+      mqtt.subscribe(MQTT_TOPIC_DISPLAY);
+      mqtt.loop();
+    } else {
+      Serial.println("MQTT Failed to connect!");
+      delay(5000);
+    }
+  }
+
+  strip.setPixelColor(0, 255, 255, 255); // Define a cor como branco.
+  readingIn = analogRead(PINSensor); // Salva a leitura do sensor na variavel adequada
+  output = readingIn/4 ;
+  strip.show();
+  delay(500);
+  strip.setBrightness(readingIn/4); // define o brilho na escala do led ~ 0-255
+
+// Print Message to console in JSON format
+  status["leitura"] = readingIn;
+  status["saida"] = output;
+  serializeJson(jsonDoc, msg, 50);
+  Serial.println(mlesg);
+
+  Serial.println(msg);
+    if (!mqtt.publish(MQTT_TOPIC, msg)) {
+      Serial.println("MQTT Publish failed");
+    }
+  // Pause - but keep polling MQTT for incoming messages
+  for (int i = 0; i < 10; i++) {
+    mqtt.loop();
+    delay(100);
+  }
+  
+}
