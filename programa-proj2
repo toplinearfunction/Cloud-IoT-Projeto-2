@@ -9,19 +9,19 @@
 
 #define PINLed D4
 #define PINSensor A0
-#define STASSID "monstrao-otakinha" // Nome da rede
-#define STAPSK  "enkcqyP8"    // senha
+#define STASSID "Nome-da-rede" // Nome da rede
+#define STAPSK  "senha-da-rede"    // senha
 
 // ---------------------------------------------------------------
 //        UPDATE CONFIGURATION TO MATCH YOUR ENVIRONMENT
 // ---------------------------------------------------------------
 
 // Watson IoT connection details
-#define MQTT_HOST "55l7dy.messaging.internetofthings.ibmcloud.com"
+#define MQTT_HOST "XXXXXX.messaging.internetofthings.ibmcloud.com"
 #define MQTT_PORT 1883
-#define MQTT_DEVICEID "d:55l7dy:ESP8266:dev01"
+#define MQTT_DEVICEID "d:XXXXXX:YYYYYY:ZZZZZZ"
 #define MQTT_USER "use-token-auth"
-#define MQTT_TOKEN "Fisica123"
+#define MQTT_TOKEN "senha-cadastrada-em-XXXXXX"
 #define MQTT_TOPIC "iot-2/evt/status/fmt/json"
 #define MQTT_TOPIC_DISPLAY "iot-2/cmd/display/fmt/json"
 
