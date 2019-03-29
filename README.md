@@ -2,9 +2,7 @@ Nesse repositório estará a documentação implementada para realizar o projeto
 
 **Material utilizado:**
 
-NodeMCU \\
-LED RGB (WS2812b) \\
-Sensor de luminosidade (LM393 ou KY-018) \\
+NodeMCU; LED RGB (WS2812b); Sensor de luminosidade (LM393 ou KY-018).
 
 
 **A descrição do projeto:** 
