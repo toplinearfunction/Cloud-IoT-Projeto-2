@@ -2,9 +2,7 @@ Nesse repositório estará a documentação implementada para realizar o projeto
 
 **Material utilizado:**
 
-NodeMCU \\
-LED RGB (WS2812b) \\
-Sensor de luminosidade (LM393 ou KY-018) \\
+NodeMCU; LED RGB (WS2812b); Sensor de luminosidade (LM393 ou KY-018).
 
 
 **A descrição do projeto:** 
@@ -27,3 +25,5 @@ Relacionamos a leitura feita pelo sensor de luminosidade, um sinal analógico de
 O algoritmo consiste em fazermos uma leitura pelo sensor; em seguida, dividimos este número por 4 para que seja utilizado na função de intensidade da luminosidade. Esses dados são impressos no serial monitor e enviados pra nuvem. 
 
 No NodeRed criamos uma chave de código para a página do projeto. Esta chave recebe a informação da nuvem e usamos em dois switchs para lermos a informação dada pelo leitor de luminosidade e a informação mandada para ser usada no LED. Separadas as informações, passamos estas por uma função de normalização para que os gráficos sejam mais aprazíveis para o entendimento daquele que está analisando. De forma que maior luminosidade é indicada de uma escala percentual e o led também o é, porém de forma complementar.
+
+**Endereço para nuvem:** https://renan-iot.mybluemix.net/ui/#!/0 
